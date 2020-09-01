@@ -1,0 +1,32 @@
+server:
+   port: 9000
+
+spring:
+   application:
+     name: user-service
+   
+   jpa:
+     hibernate:
+      ddl-auto: update
+      
+   datasource:
+     driverClassName: com.mysql.jdbc.Driver
+     url: jdbc:mysql://localhost/libraryManagement?serverTimezone=UTC
+     username: root
+     password:     
+   
+eureka:
+      instance:
+        hostname: localhost
+
+      client:
+        register-with-eureka: true
+        fetch-registry: true
+        serviceUrl:
+          defaultZone: http://localhost:8761/eureka
+
+
+     
+   
+     
+   

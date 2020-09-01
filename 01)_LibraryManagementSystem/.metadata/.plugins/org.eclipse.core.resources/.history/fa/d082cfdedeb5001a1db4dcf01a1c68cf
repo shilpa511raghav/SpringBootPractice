@@ -1,0 +1,32 @@
+package com.libraryManagement.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.libraryManagement.model.UserModel;
+import com.libraryManagement.repository.UserRepository;
+
+@RestController
+public class UserController {
+	
+	
+	@Autowired
+	UserRepository userRepository;
+	
+	@GetMapping(value="/all")
+	public String getList(){
+		return "print list";
+	}
+	
+	
+	@PostMapping(value="/add")
+	public UserModel addUsers(@RequestBody UserModel newUser) {
+		return userRepository.save(newUser);
+	}
+
+}

@@ -1,0 +1,107 @@
+package com.libraryManagement.controller;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.libraryManagement.dataformat.Request;
+import com.libraryManagement.dataformat.Response;
+import com.libraryManagement.exception.ResourceNotFoundException;
+import com.libraryManagement.model.UserModel;
+import com.libraryManagement.repository.UserRepository;
+import com.libraryManagement.service.UserService;
+
+@RestController
+public class UserController {
+	
+	@Autowired
+	private UserService userService;
+	
+	
+//	public UserController(UserService userService) {
+//		this.userService = userService;
+//	}
+	
+	@GetMapping(value="/all")
+	public List<UserModel> getListOfUsers() {
+		List<UserModel> userData = userService.getList();
+		return userData;
+		
+	}
+	
+	@PostMapping(value="/add")
+	public UserModel addNewUser(@RequestBody UserModel newUser) {
+		return userService.addUsers(newUser);
+	}
+	
+	
+	@GetMapping(value="/getOne")
+	public UserModel getUserByid(@PathVariable int id) throws ResourceNotFoundException {
+		return userService.getById(id);
+		
+	}
+	
+	@DeleteMapping(value="/delete/{id}")
+	public void deleteUserById(@PathVariable int id) throws ResourceNotFoundException {
+		userService.deleteUser(id);
+	}
+	
+	@PutMappingvalue(value="/update")
+	
+//	@GetMapping(value = "/all")
+//	public List<UserModel> getList() {
+//		return userRepository.findAll();
+//	}
+//
+//	@PostMapping(value = "/add")
+//	public UserModel addUsers(@RequestBody UserModel newUser) {
+//		return userRepository.save(newUser);
+//	}
+//
+//	@GetMapping(value = "/getOne/{id}")
+//	public Optional<UserModel> getById(@PathVariable(value = "id") int id) {
+//		return this.userRepository.findById(id);
+//	}
+//
+//	@DeleteMapping(value = "/delete/{id}")
+//	public void deleteUser(@PathVariable(value = "id") int id) {
+//		userRepository.deleteById(id);
+//	}
+//
+//	@PutMapping(value = "/updateUser/{id}")
+//	public Response updateUser(@RequestBody Request req) {
+//
+//		Response resp = new Response();
+//		if (req != null && req.getData() != null) {
+//			UserModel user = req.getData();
+//			Optional<UserModel> userData = userRepository.findById(user.getUid());
+//			if (userData.isPresent()) {
+//				UserModel updateInfo = userData.get();
+//				updateInfo.setName(user.getName());
+//				updateInfo.setEmail(user.getEmail());
+//				updateInfo.setPassword(user.getPassword());
+//				updateInfo.setRole(user.getRole());
+//				updateInfo.setUsername(user.getUsername());
+//				updateInfo.setRoleId(user.getRoleId());
+//				userRepository.save(updateInfo);
+//				resp.setResponse(updateInfo);
+//			} else {
+//				resp.setECR("");
+//				resp.setERR("");
+//			}
+//		} else {
+//			resp.setECR("");
+//			resp.setERR("");
+//
+//		}
+//		return resp;
+//	}
+}

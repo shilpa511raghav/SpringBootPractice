@@ -1,0 +1,30 @@
+server:
+   port: 9022
+
+spring:
+   application:
+     name: auth-service
+   
+   jpa:
+     hibernate:
+      ddl-auto: update
+     properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+ 
+      
+   datasource:
+     driverClassName: com.mysql.jdbc.Driver
+     url: jdbc:mysql://localhost/libraryManagement?serverTimezone=UTC
+     username: root
+     password:     
+   
+eureka:
+      instance:
+        hostname: localhost
+
+      client:
+        register-with-eureka: true
+        fetch-registry: true
+        serviceUrl:
+          defaultZone: http://localhost:8761/eureka

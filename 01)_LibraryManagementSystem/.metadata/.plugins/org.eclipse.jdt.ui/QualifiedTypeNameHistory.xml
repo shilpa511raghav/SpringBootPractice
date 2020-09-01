@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.libraryManagement.model.Model"/>
+    <fullyQualifiedTypeName name="com.libraryManagement.exception.ResourceNotFoundException"/>
+    <fullyQualifiedTypeName name="com.libraryManagement.model.UserModel"/>
+</qualifiedTypeNameHistroy>
