@@ -22,11 +22,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 //import io.jsonwebtoken.lang.Arrays;
 import io.jsonwebtoken.SignatureException;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-	
+
 	private JwtConfiguration jwtConfig;
 
 	public JwtAuthorizationFilter(JwtConfiguration jwtConfig) {
@@ -50,7 +51,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		} else {
 			// if header then get token
 			jwttoken = header.replace(jwtConfig.getPrefix(), ""); // .trim();
-			System.out.println("jwtttttttttttttt========================"+jwttoken);
 			try {
 
 				claims = Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(jwttoken).getBody();
@@ -63,6 +63,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 				System.out.println("the token is expired and not valid anymore" + e);
 			} catch (SignatureException e) {
 				System.out.println("Authentication Failed. Username or Password not valid." + e);
+			} catch (MalformedJwtException e) {
+				System.out.println("token is not formed correctly- malformed token." + e);
+
 			}
 
 		}
@@ -77,53 +80,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, "",
 					authorities);
 			authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-			System.out.println("auth---------------------" + authToken);
 
 			// Authenticate user
 			SecurityContextHolder.getContext().setAuthentication(authToken);
-//			System.out.println("security context holder"+SecurityContextHolder.getContext());
 
 		} else {
 			System.out.println("no context and token clear it");
 			SecurityContextHolder.clearContext();
 		}
 
-//		static secret = MacProvider.generateKey();
-
-//		// validate token
-//		try {
-//			String secret = jwtConfig.getSecret();
-//			System.out.println("Secret : " + jwtConfig.getSecret());
-//
-//			System.out.println("claimmmmmmmmmmmmmmmm====" + claims);
-//			System.out.println("ssssshhhhh================++++++++++++++++++++++++++++++++++++++");
-//
-//			System.out.println("uname:====" + username);
-//			if (username != null) {
-//				final Collection authorities = Arrays.stream(claims.get("Roles").toString().split(","))
-//						.map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-//
-//				System.out.println("authorites are: " + authorities);
-//
-//				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, "",
-//						authorities);
-//				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//				System.out.println("auth---------------------" + authToken);
-//
-//				// Authenticate user
-//				SecurityContextHolder.getContext().setAuthentication(authToken);
-//
-//			}
-//
-//		} catch (Exception ex) {
-//			SecurityContextHolder.clearContext();
-//
-//			
-//		}
 		filterChain.doFilter(request, response);
-		System.out.println("resp----------------1234--------------"+response);
-
 	}
-	
-	
+
 }

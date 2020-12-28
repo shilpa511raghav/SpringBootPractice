@@ -1,5 +1,7 @@
 server:
   port: 8799
+  forward-headers-strategy: framework       
+  
   
 spring:
    application: 
@@ -15,8 +17,6 @@ eureka:
         fetch-registry: true
         service-url:
           defaultZone: http://${eureka.instance.hostname}:8761/eureka/
-          
-
 
 #this below configuration is used in order to expose routes
 # bcoz in updated version greater than 2.0.x  it need to be expose otherwise we will not able to see routes

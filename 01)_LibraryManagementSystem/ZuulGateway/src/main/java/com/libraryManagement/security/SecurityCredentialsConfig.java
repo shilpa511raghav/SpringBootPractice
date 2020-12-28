@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,6 +22,20 @@ public class SecurityCredentialsConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private JwtAuthenticationEntryPoint authEntryPoint;
+	
+	private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**"
+            
+            // other public endpoints of your API may be appended to this array
+    };
+
 		
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -30,21 +45,30 @@ public class SecurityCredentialsConfig extends WebSecurityConfigurerAdapter{
 			.and()
 			.exceptionHandling().authenticationEntryPoint(authEntryPoint)
 			.and()
+			
 			.addFilterAfter(new JwtAuthorizationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
 			.authorizeRequests()
-//			.antMatchers(jwtConfig.getUri()).permitAll()
-			.antMatchers("/v2/api-docs",
-	                "/swagger-resources/configuration/ui",
-	                "/swagger-resources",
-	                "/swagger-resources/configuration/security",
-	                "/swagger-ui.html",
-	                "/webjars/**").permitAll()
+			
 //			.antMatchers("/api/user/**").hasRole("ADMIN")
 //			.antMatchers("/auth-service/**").permitAll()
 			.antMatchers("/actuator/**").permitAll()
 			.antMatchers(jwtConfig.getUri()).permitAll()
-		.anyRequest().authenticated();
+			.anyRequest().authenticated();
 	}
+	
+	
+//	@Override
+//	  public void configure(WebSecurity web) throws Exception {
+//	    // Allow swagger to be accessed without authentication
+//	    web.ignoring().antMatchers("/v2/api-docs")//
+//	        .antMatchers("/swagger-resources/**")//
+//	        .antMatchers("/swagger-ui.html")//
+//	        .antMatchers("/configuration/**")//
+//	        .antMatchers("/webjars/**")//
+//	        .antMatchers("/public");
+//	       
+//	        
+//	  }
 	
 //	@Bean
 //  	public JwtConfiguration jwtConfigure() {

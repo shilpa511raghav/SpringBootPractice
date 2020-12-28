@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,26 +20,45 @@ import com.libraryManagement.exception.ResourceNotFoundException;
 import com.libraryManagement.model.UserModel;
 import com.libraryManagement.repository.UserRepository;
 import com.libraryManagement.service.UserService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/user")
+@Api(value="onlinestore", description="Operations pertaining to library management")  // swagger annotation
 public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Value("${server.port}")
+    private int serverPort;
 
 	@GetMapping("/hello")
 	public String hello() {
-		return "userController";
+		return "userController response from "+serverPort;
 	}
 
 //	public UserController(UserService userService) {
 //		this.userService = userService;
 //	}
 
+	@HystrixCommand(fallbackMethod = "fallback")
 	@GetMapping(value = "/all")
-	public List<UserModel> getListOfUsers() {
+	@ApiOperation(value=" list of users registered")   // swagger annotation
+	@ApiResponses(value = {
+	        @ApiResponse(code = 200, message = "Successfully retrieved list"),
+	        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+	        @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+	        @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+	})
+	public List<UserModel> getListOfUsers() throws InterruptedException {
 		List<UserModel> userData = userService.getList();
+//		Thread.sleep(3000);
 		return userData;
 
 	}
@@ -63,6 +83,12 @@ public class UserController {
 	public UserModel updateUser(@RequestBody UserModel updateInfo) throws ResourceNotFoundException {
 		return userService.updateUser(updateInfo);
 	}
+	
+	
+	// a fallback method to be called if failure happened
+		public List<UserModel> fallback(Throwable hystrixCommand) {
+			return List.of();	
+		}
 
 //	@GetMapping(value = "/all")
 //	public List<UserModel> getList() {

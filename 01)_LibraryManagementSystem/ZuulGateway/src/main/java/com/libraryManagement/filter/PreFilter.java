@@ -19,7 +19,20 @@ public class PreFilter extends ZuulFilter {
 
 	@Override
 	public boolean shouldFilter() {
-		return true;
+//		RequestContext ctx = RequestContext.getCurrentContext();
+//
+//	    HttpServletRequest request = ctx.getRequest();
+//
+//	    String url = request.getRequestURI();
+//
+//	    if(url.contains("swagger-ui.html") || url.contains("swagger-resources") || url.contains("swagger")
+//
+//	    || url.contains("v2") || url.contains("webjars")){
+//
+//	        return false;
+//
+//	    }
+	    return true;
 	}
 
 	@Override
